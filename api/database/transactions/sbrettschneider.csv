@@ -1,0 +1,15 @@
+date,type,amount,description
+2023-12-11, purchase, 99.98, subscription purchase
+2023-12-15, payment, -100.00, bi-monthly payment
+2023-12-20, purchase, 99.96, subscription purchase
+2023-12-29, payment, -100.00, bi-monthly payment
+2024-01-10, purchase, 99.96, subscription purchase
+2024-01-15, payment, -100.00, bi-monthly payment
+2024-01-28, purchase, 100.02, subscription purchase
+2024-01-30, payment, -100.00, bi-monthly payment
+2024-02-14, purchase, 94.00, subscription purchase
+2024-02-15, payment, -100.00, bi-monthly payment
+2024-02-26, purchase, 95.95, subscription purchase
+2024-02-28, payment, -100.00, bi-monthly payment
+2024-03-11, purchase, 98.99, subscription purchase
+2024-03-30, purchase, 98.99, subscription purchase

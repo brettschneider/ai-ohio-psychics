@@ -1,0 +1,9 @@
+{
+  "short_name": "Personalized RAG",
+  "name": "Personalized RAG Implementation",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

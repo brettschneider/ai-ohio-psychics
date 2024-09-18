@@ -1,0 +1,6 @@
+date,type,amount,description
+2024-05-18, purchase, 0.00, free initial reading
+2024-05-18, purchase, 5.00, long distance carrier fee
+2024-06-01, purchase, 25.00, 10 minute reading
+2024-06-01, purchase, 5.00, long distance carrier fee
+2024-06-02, payment, -25.00, payment received
