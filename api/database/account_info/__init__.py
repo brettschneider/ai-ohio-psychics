@@ -7,15 +7,6 @@ from pydantic import BaseModel
 
 from utility import time_it
 
-TOOL_DEF = {
-    'type': 'function',
-    'function': {
-        'name': 'get_customer_info',
-        'description': "Get information about a customer's account (aka profile), including their email and postal addresses",
-        'parameters': {},
-    },
-}
-
 
 class AccountInfo(BaseModel):
     customer_id: str
@@ -69,3 +60,11 @@ def get_user_name(customer_id: str):
 def get_customer_info(customer_id: str):
     """Mock API call to gather customer info."""
     return _load_account(customer_id).human_readable()
+
+
+def create_customer_info_tool(customer_id):
+    def customer_info():
+        """Get information about a customer's account (aka profile), including their email and postal addresses"""
+        return get_customer_info(customer_id)
+
+    return customer_info

@@ -5,15 +5,6 @@ from pathlib import Path
 
 from utility import time_it
 
-TOOL_DEF = {
-    'type': 'function',
-    'function': {
-        'name': 'get_customer_transactions',
-        'description': "Get information about a customer's financial transactions (purchases, orders, returns, balance, etc.)",
-        'parameters': {},
-    },
-}
-
 
 @time_it
 def get_customer_transactions(customer_id: str):
@@ -39,3 +30,10 @@ def get_customer_transactions(customer_id: str):
     response += "Payment terms: all outstanding balances are due within 30 days of the last purchase.\n"
     return response
 
+
+def create_customer_transactions_tool(customer_id):
+    def customer_transactions():
+        """Get information about a customer's financial transactions (purchases, orders, returns, balance, etc.)"""
+        return get_customer_transactions(customer_id)
+
+    return customer_transactions

@@ -38,7 +38,7 @@ cli:
 
 ## clear-sessions: Remove all the session data
 clear-sessions:
-	@for d in $$(find ./database/sessions -type f -iname '*.json'); do \
+	@for d in $$(find ./database/sessions -type f -iname '*.pickle'); do \
 		echo "Removing $$d"; \
 		rm -r "$$d"; \
 	done

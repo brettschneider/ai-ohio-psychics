@@ -1,28 +1,39 @@
+import os
 import sys
 
-import ollama
+import google.generativeai as genai
+
+from google.generativeai import types
 
 import database.account_info
 import database.sessions
 import database.transactions
+from database.account_info import create_customer_info_tool
+from database.transactions import create_customer_transactions_tool
 
-DEFAULT_MODEL = "llama3.1"
+DEFAULT_MODEL = "gemini-1.5-flash"
 
 
 class ChatBot:
     messages = []
 
-    def __init__(self, customer_id: str, model: str = None):
+    def __init__(self, customer_id: str, model: str = None, api_key=None):
         if not model:
             model = DEFAULT_MODEL
         self.customer_id = customer_id
         self.model = model
-        self.client = ollama.Client()
-        self.load_messages()
-        self.tools = [
-            database.account_info.TOOL_DEF,
-            database.transactions.TOOL_DEF,
-        ]
+        self.api_key = api_key or os.environ.get('GOOGLE_API_KEY')
+        self.safety_settings = {
+            types.HarmCategory.HARM_CATEGORY_HARASSMENT: types.HarmBlockThreshold.BLOCK_NONE,
+            types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: types.HarmBlockThreshold.BLOCK_NONE,
+            types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: types.HarmBlockThreshold.BLOCK_NONE,
+            types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: types.HarmBlockThreshold.BLOCK_NONE
+        }
+
+    def get_client(self, tools):
+        genai.configure(api_key=self.api_key)
+        model = genai.GenerativeModel(self.model, tools=tools)
+        return model
 
     def load_messages(self):
         self.messages = database.sessions.load_session(self.customer_id)
@@ -30,49 +41,17 @@ class ChatBot:
     def save_messages(self):
         database.sessions.save_session(self.customer_id, self.messages)
 
-    def prepare_messages(self, question_prompt: str = None):
-        if question_prompt:
-            self.messages.append({
-                'role': 'user',
-                'content': question_prompt
-            })
-        return database.sessions.system_prompt(self.customer_id) + self.messages[-25:]
-
     def ask(self, question_prompt: str):
-        messages = self.prepare_messages(question_prompt)
-        initial_response = self.client.chat(
-            model=self.model,
-            messages=messages,
-            tools=self.tools
-        )
-        self.messages.append(initial_response['message'])
-
-        if not initial_response['message'].get('tool_calls'):
-            yield initial_response['message']['content']
-            return
-
-        if initial_response['message'].get('tool_calls'):
-            available_functions = {
-                'get_customer_info': database.account_info.get_customer_info,
-                'get_customer_transactions': database.transactions.get_customer_transactions,
-            }
-            for tool in initial_response['message']['tool_calls']:
-                function_to_call = available_functions[tool['function']['name']]
-                function_response = function_to_call(self.customer_id)
-                self.messages.append({
-                    'role': 'tool',
-                    'content': function_response,
-                })
-
-        final_response = self.client.chat(model=self.model, messages=self.prepare_messages(), stream=True)
-        message_to_add = ""
-        for response_token in final_response:
-            message_to_add += response_token['message']['content']
-            yield response_token['message']['content']
-        self.messages.append({
-            'role': response_token['message']['role'],
-            'content': message_to_add
-        })
+        tools = [
+            create_customer_info_tool(self.customer_id),
+            create_customer_transactions_tool(self.customer_id)
+        ]
+        client = self.get_client(tools)
+        self.load_messages()
+        chat = client.start_chat(history=self.messages, enable_automatic_function_calling=True)
+        response = chat.send_message(question_prompt, safety_settings=self.safety_settings)
+        self.messages = chat.history
+        yield response.text
         self.save_messages()
 
 
