@@ -1,6 +1,73 @@
+import { Col, Row, Image } from "react-bootstrap";
 import { useStateDispatch } from "./ApplicationState";
 
-export const Home = () => {
+
+export const AuthenticatedHome = () => {
+    const { state } = useStateDispatch();
+    return (
+        <div>
+            <img src="/OhioPsychics.png" alt="Logo Image" width="100%" />
+            <br />
+            <br />
+            <p>Welcome {state.userName}!  We just knew you'd come back!</p>
+            <br />
+            <h2>
+                Explore by Mediums
+            </h2>
+            <p>
+                Connect with one of our specialized advisors to get the clarity and the guidance you need.
+            </p>
+            <br />
+            <Row>
+                <Col md={4}>
+                    <Image src="/medium_1.png" width={200} rounded>
+                    </Image>
+                    <h4>
+                        Aurora Starweaver
+                    </h4>
+                </Col>
+                <Col md={4}>
+                    <Image src="/medium_2.png" width={200} rounded>
+                    </Image>
+                    <h4>
+                        Rowan Psychiccianni
+                    </h4>
+                </Col>
+                <Col md={4}>
+                    <Image src="/medium_3.png" width={200} rounded>
+                    </Image>
+                    <h4>
+                        Luna Nightshade
+                    </h4>
+                </Col>
+                <Col md={4}>
+                    <Image src="/medium_4.png" width={200} rounded>
+                    </Image>
+                    <h4>
+                        Cassius Sightmore
+                    </h4>
+                </Col>
+                <Col md={4}>
+                    <Image src="/medium_5.png" width={200} rounded>
+                    </Image>
+                    <h4>
+                        Diana Clairvoyance
+                    </h4>
+                </Col>
+                <Col md={4}>
+                    <Image src="/medium_6.png" width={200} rounded>
+                    </Image>
+                    <h4>
+                    Emrys Foresight
+                    </h4>
+                </Col>
+            </Row>
+        </div>
+    )
+}
+
+
+export const UnauthenticatedHome = () => {
     const { state } = useStateDispatch();
     return (
         <div>
@@ -46,4 +113,12 @@ export const Home = () => {
             </p>
         </div>
     )
+
+}
+
+export const Home = () => {
+    const { state } = useStateDispatch();
+    return state.token
+        ? (<AuthenticatedHome />)
+        : (<UnauthenticatedHome />)
 };

@@ -115,6 +115,7 @@ export const ChatBotWindow = () => {
                             value={userInput}
                             onChange={handleInputChange}
                             disabled={sendDisabled}
+                            autoFocus
                         />
                     </Form.Group>
                     <Button variant="primary" type="submit" className="mt-2" disabled={sendDisabled || !userInput}>
