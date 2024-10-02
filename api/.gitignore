@@ -1,2 +1,2 @@
-database/sessions/*.json
+database/sessions/*.pickle
 .envrc
