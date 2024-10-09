@@ -130,3 +130,6 @@ API.  Additionally, the CORS setup is configured to just allow everything.  The
 chatbot does not utilize the webpack proxy, it talks directly to the API so that
 the token streaming looks nice in the browser.
 
+
+**DISCLAIMER** This code is provided for demonstration purposes only and it provided with
+no warranty of guarantee.  Use it at your own peril.
